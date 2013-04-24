@@ -23,7 +23,7 @@ module VagrantPlugins
         # create the temporary hosts file
         path = env.tmp_path.join('hosts')
         File.open(path, 'w') do |file|
-          file << "127.0.0.1\tlocalhost\slocalhost.localdomain\n"
+          file << "\n"
 
           # add a hosts entry for each active machine matching the provider
           env.active_machines.each do |name, p|
@@ -50,7 +50,8 @@ module VagrantPlugins
             :name => machine.name
           })
           machine.communicate.upload(path, '/tmp/hosts')
-          machine.communicate.sudo("mv /tmp/hosts /etc/hosts")
+          machine.communicate.sudo("[ -f /etc/hosts.orig ] || cp /etc/hosts /etc/hosts.orig")
+          machine.communicate.sudo("cat /etc/hosts.orig /tmp/hosts > /etc/hosts")
         end
       end
     end

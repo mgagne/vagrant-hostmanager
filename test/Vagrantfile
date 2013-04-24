@@ -4,18 +4,20 @@
 Vagrant.require_plugin('vagrant-hostmanager')
 
 Vagrant.configure('2') do |config|
-  config.vm.box = 'precise64-chef11.2'
-  config.vm.box_url = 'https://opscode-vm.s3.amazonaws.com/vagrant/opscode_ubuntu-12.04_chef-11.2.0.box'
+  config.vm.box = 'precise32'
+  config.vm.box_url = 'http://files.vagrantup.com/precise32.box'
 
   config.hostmanager.auto_update = false
 
   config.vm.define :server1 do |server|
-    server.vm.hostname = 'fry'
+    server.vm.hostname = 'fry.example.org'
     server.vm.network :private_network, :ip => '10.0.5.2'
+    server.hostmanager.aliases = %w(fry42.example.org fry-old.example.org)
   end
 
   config.vm.define :server2 do |server|
-    server.vm.hostname = 'bender'
+    server.vm.hostname = 'bender.example.org'
     server.vm.network :private_network, :ip => '10.0.5.3'
+    server.hostmanager.aliases = %w(bender42.example.org bender-old.example.org)
   end
 end

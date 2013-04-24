@@ -8,5 +8,5 @@ namespace :gem do
 end
 
 task :test do
-  sh 'bash test/test.sh'
+  sh 'test/test.sh'
 end
