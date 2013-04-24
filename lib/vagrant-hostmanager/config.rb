@@ -5,6 +5,9 @@ module VagrantPlugins
       attr_accessor :ignore_private_ip
       attr_accessor :aliases
 
+      ACCEPTED_CONFIGS = [UNSET_VALUE, true, false]
+      INVALID_CONFIG_MESSAGE = "A value for %s must be true, false or unset."
+
       def initialize
         @auto_update = UNSET_VALUE
         @ignore_private_ip = UNSET_VALUE
@@ -17,19 +20,11 @@ module VagrantPlugins
       end
 
       def validate(machine)
-        errors = Array.new
+        errors = []
 
-        # check if auto_update option is either true or false
-        if ![TrueClass, FalseClass].include?(auto_update.class)
-          errors << "A value for hostmanager.auto_update can be true or false."
-        end
+        errors << INVALID_CONFIG_MESSAGE % "hostmanager.auto_update" unless ACCEPTED_CONFIGS.include?(auto_update)
+        errors << INVALID_CONFIG_MESSAGE % "hostmanager.ignore_private_ip" unless ACCEPTED_CONFIGS.include?(ignore_private_ip)
 
-        # check if ignore_private_ip option is either true or false
-        if ![TrueClass, FalseClass].include?(ignore_private_ip.class)
-          errors << "A value for hostmanager.ignore_private_ip can be true or false."
-        end
-
-        # check if aliases option is an Array
         if !machine.config.hostmanager.aliases.kind_of?(Array)
           errors << "A value for hostmanager.aliases must be an Array."
         end
