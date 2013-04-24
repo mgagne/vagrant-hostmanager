@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 . $(dirname $0)/functions.sh
 cd $(dirname $0)
 set -e
