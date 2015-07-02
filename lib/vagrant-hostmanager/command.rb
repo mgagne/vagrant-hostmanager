@@ -5,9 +5,15 @@ module VagrantPlugins
 
       def execute
         options = {}
+        options[:parallel] = false
         opts = OptionParser.new do |o|
           o.banner = 'Usage: vagrant hostmanager [vm-name]'
           o.separator ''
+
+          o.on("--[no-]parallel",
+               "Enable or disable parallelism") do |parallel|
+            options[:parallel] = parallel
+          end
 
           o.on('--provider provider', String,
             'Update machines with the specific provider.') do |provider|
@@ -20,8 +26,12 @@ module VagrantPlugins
 
         generate(@env, options[:provider].to_sym)
 
-        with_target_vms(argv, options) do |machine|
-          update(machine)
+        @env.batch(options[:parallel]) do |batch|
+          with_target_vms(argv, options) do |machine|
+            batch.custom(machine) do |m|
+              update(m)
+            end
+          end
         end
       end
     end

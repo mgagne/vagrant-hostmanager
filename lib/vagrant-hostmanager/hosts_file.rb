@@ -23,6 +23,7 @@ module VagrantPlugins
         # create the temporary hosts file
         path = env.tmp_path.join('hosts')
         File.open(path, 'w') do |file|
+          file.sync = false
           file << "\n"
 
           # add a hosts entry for each active machine matching the provider
